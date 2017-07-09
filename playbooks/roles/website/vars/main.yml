@@ -1,0 +1,3 @@
+npm_executable: "{{ nvm.dir }}/versions/node/v{{ nvm.node_version }}/bin/npm"
+instance_location: /instances/v{{ website_version }}
+instances_number: 5

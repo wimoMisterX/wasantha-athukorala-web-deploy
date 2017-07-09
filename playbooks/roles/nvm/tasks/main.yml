@@ -8,11 +8,11 @@
   become: true
 
 - name: Install nvm {{ nvm.version }}
-  become: "{{ nvm.user }}"
+  become: "{{ user }}"
   git: repo=https://github.com/creationix/nvm.git dest=~/.nvm version={{ nvm.version }}
 
 - name: Source nvm in ~/.profile
-  become: "{{ nvm.user }}"
+  become: "{{ user }}"
   lineinfile: >
     dest=~/.profile
     line="source ~/.nvm/nvm.sh"
@@ -22,7 +22,7 @@
   shell: source ~/.profile && nvm install {{ nvm.node_version }}
   args:
     executable: /bin/bash
-  become: "{{ nvm.user }}"
+  become: "{{ user }}"
   register: nvm_install_result
   changed_when: "'is already installed.' not in nvm_install_result.stderr"
 
@@ -30,7 +30,7 @@
   shell: source ~/.profile && nvm ls | grep -e 'default.*{{ nvm.node_version }}'
   args:
     executable: /bin/bash
-  become: "{{ nvm.user }}"
+  become: "{{ user }}"
   register: nvm_check_default
   changed_when: False
   ignore_errors: True
@@ -39,5 +39,5 @@
   shell: source ~/.profile && nvm alias default {{ nvm.node_version }}
   args:
     executable: /bin/bash
-  become: "{{ nvm.user }}"
+  become: "{{ user }}"
   when: nvm_check_default|failed

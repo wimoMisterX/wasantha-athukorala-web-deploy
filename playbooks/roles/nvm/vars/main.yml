@@ -1,6 +1,0 @@
-nvm:
-  dir: /home/ubuntu/.nvm
-  profile: /home/ubuntu/.bashrc
-  user: ubuntu
-  version: v0.33.2
-  node_version: 6.9.1

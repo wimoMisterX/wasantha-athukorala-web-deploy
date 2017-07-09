@@ -1,0 +1,6 @@
+user: ubuntu
+nvm:
+  dir: /home/{{ user }}/.nvm
+  profile: /home/{{ user }}/.bashrc
+  version: v0.33.2
+  node_version: 6.9.1

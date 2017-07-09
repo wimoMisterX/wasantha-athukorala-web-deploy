@@ -10,3 +10,19 @@
   with_items:
     - htop
     - screen
+
+- name: Create keys folder
+  file:
+    path: /keys
+    state: directory
+    mode: 0755
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Copy git-crypt key required to unlock wasantha-athukorala-web repo
+  copy:
+    src: wasantha-athukorala-web-git-crypt-key
+    dest: /keys/wasantha-athukorala-web-git-crypt-key
+    mode: 0644
+    owner: "{{ user }}"
+    group: "{{ user }}"

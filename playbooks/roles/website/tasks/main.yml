@@ -1,0 +1,88 @@
+- name: Install debain packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - git-crypt
+
+- name: Install pm2
+  become: "{{ user }}"
+  shell: source ~/.profile && npm install pm2 -g
+  args:
+    executable: /bin/bash
+
+- name: Create folder for v{{ website_version }}
+  file:
+    path: "{{ instance_location }}/src"
+    state: directory
+    mode: 0755
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    recurse: yes
+
+- name: Clone wasantha-athukorala-web git repo
+  become: "{{ user }}"
+  git:
+    repo: 'https://github.com/wimoMisterX/wasantha-athukorala-web.git'
+    dest: "{{ instance_location }}/src"
+    version: "{{ website_version }}"
+    accept_hostkey: yes
+    force: yes
+
+- name: Delete node_modules if it exists
+  file:
+    state: absent
+    path: "{{ instance_location }}/src/node_modules"
+
+- name: Install npm packages
+  become: "{{ user }}"
+  shell: source ~/.profile && npm install
+  args:
+    executable: /bin/bash
+    chdir: "{{ instance_location }}/src"
+
+- name: Create folder for assets
+  file:
+    path: "{{ instance_location }}/src/src/assets/{{ item }}"
+    state: directory
+    mode: 0755
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  with_items:
+    - js
+
+- name: Build JS bundle
+  become: "{{ user }}"
+  shell: source ~/.profile && npm run build
+  args:
+    executable: /bin/bash
+    chdir: "{{ instance_location }}/src"
+
+- name: Unlock encrypted files
+  shell: git-crypt unlock /keys/wasantha-athukorala-web-git-crypt-key
+  args:
+    chdir: "{{ instance_location }}/src"
+
+- name: Copy pm2 deploy file
+  template:
+    src: pm2-deploy.yml
+    dest: "{{ instance_location }}"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0644
+
+- name: Stop previous versions
+  become: "{{ user }}"
+  shell: source ~/.profile && pm2 stop all
+  args:
+    executable: /bin/bash
+  register: pm2_stop_result
+  failed_when: "'No process found' not in pm2_stop_result.stderr"
+
+- name: Start app
+  become: "{{ user }}"
+  shell: source ~/.profile && pm2 start pm2-deploy.yml
+  args:
+    chdir: "{{ instance_location }}"
+    executable: /bin/bash
