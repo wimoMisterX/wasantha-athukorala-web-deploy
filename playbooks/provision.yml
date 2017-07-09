@@ -1,0 +1,14 @@
+- hosts: webservers
+  remote_user: ubuntu
+  become: true
+  gather_facts: false
+  pre_tasks:
+    - name: Install packages required by ansible
+      raw: sudo apt-get -y install python-simplejson aptitude
+      register: ansible_requirements_setup
+      changed_when: "'0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.' not in ansible_requirements_setup.stdout"
+    - name: Gather facts
+      action: setup
+  roles:
+    - common
+    - nvm
