@@ -1,0 +1,36 @@
+upstream wasanthaathukoralabackend {
+    least_conn;
+
+{% for port in range(start_port, start_port+total_instances) %}
+    server localhost:{{ port }};
+{% endfor %}
+}
+
+server {
+    listen 80;
+    server_name {{ domain }};
+
+    proxy_set_header HOST $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    location ~ \.(jpg|jpeg|png)$ {
+        image_filter resize 600 600;
+        image_filter_jpeg_quality 50;
+        proxy_http_version 1.1;
+        proxy_cache web_cache;
+        proxy_cache_key "$proxy_host$uri$is_args$args";
+        proxy_cache_valid 30m;
+        proxy_cache_valid any 10s;
+        proxy_cache_lock on;
+        proxy_cache_use_stale error invalid_header timeout updating;
+        expires 30m;
+        proxy_pass http://wasanthaathukoralabackend;
+    }
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_pass http://wasanthaathukoralabackend;
+    }
+}

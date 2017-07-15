@@ -1,0 +1,47 @@
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: copy nginx conf
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    mode: 0644
+    owner: "{{ user }}"
+    group: "{{ group }}"
+
+- name: delete default nginx conf
+  file:
+    state: absent
+    path: "/etc/nginx/sites-enabled/default"
+
+- name: copy maintenance html
+  copy:
+    src: maintenance.html
+    dest: /var/www/html/maintenance.html
+    mode: 0644
+    owner: "{{ user }}"
+    group: "{{ group }}"
+
+- name: deploy nginx maintenance conf
+  template:
+    src: maintenance
+    dest: "/etc/nginx/sites-available/maintenance"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0644
+
+- name: add nginx maintenance conf to sites-enabled
+  file:
+    src: "/etc/nginx/sites-available/maintenance"
+    dest: "/etc/nginx/sites-enabled/maintenance"
+    state: link
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0644
+
+- name: start nginx
+  service:
+    name: nginx
+    state: reloaded

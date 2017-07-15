@@ -1,0 +1,26 @@
+- name: remove maintenance site
+  file:
+    path: /etc/nginx/sites-enabled/maintenance
+    state: absent
+
+- name: deploy nginx site conf
+  template:
+    src: site
+    dest: "{{ instance_location }}/site"
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0644
+
+- name: add nginx conf to sites-enabled
+  file:
+    src: "{{ instance_location }}/site"
+    dest: "/etc/nginx/sites-enabled/wasantha-athukorala-web-v{{ website_version }}"
+    state: link
+    owner: "{{ user }}"
+    group: "{{ group }}"
+    mode: 0644
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: reloaded

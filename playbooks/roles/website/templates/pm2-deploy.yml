@@ -1,8 +1,11 @@
 apps:
+{% for port in range(start_port, start_port+total_instances) %}
     - script: {{ instance_location }}/src/index.js
-      name: 'wasantha-athukorala-web-v{{ website_version }}'
-      instances: {{ instances_number }}
+      name: 'wasantha-athukorala-web-v{{ website_version }}-{{ port - start_port }}'
+      instances: {{ instances_in_cluster }}
       exec_mode: cluster
       env:
           NODE_ENV: {{ inventory_file|basename }}
           NODE_CONFIG_DIR: {{ instance_location }}/src/config
+          PORT: {{ port }}
+{% endfor %}

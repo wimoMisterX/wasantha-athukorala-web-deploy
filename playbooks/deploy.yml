@@ -2,5 +2,16 @@
   remote_user: ubuntu
   become: true
   gather_facts: true
+
+  pre_tasks:
+    - include_role:
+        name: nginx
+        tasks_from: pre_deploy
+
   roles:
     - website
+
+  post_tasks:
+    - include_role:
+        name: nginx
+        tasks_from: post_deploy
