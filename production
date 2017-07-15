@@ -1,2 +1,2 @@
 [webservers]
-13.126.13.195
+wasantha-athukorala-web-production-01 ansible_host=13.126.61.125
