@@ -17,7 +17,7 @@
     state: directory
     mode: 0755
     owner: "{{ user }}"
-    group: "{{ user }}"
+    group: "{{ group }}"
 
 - name: Copy git-crypt key required to unlock wasantha-athukorala-web repo
   copy:
@@ -25,4 +25,4 @@
     dest: /keys/wasantha-athukorala-web-git-crypt-key
     mode: 0644
     owner: "{{ user }}"
-    group: "{{ user }}"
+    group: "{{ group }}"

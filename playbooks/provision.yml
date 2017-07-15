@@ -1,5 +1,4 @@
 - hosts: webservers
-  remote_user: ubuntu
   become: true
   gather_facts: false
   pre_tasks:

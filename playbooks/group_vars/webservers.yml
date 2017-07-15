@@ -1,4 +1,5 @@
 user: ubuntu
+group: users
 nvm:
   dir: /home/{{ user }}/.nvm
   profile: /home/{{ user }}/.bashrc

@@ -7,7 +7,7 @@
     - git-crypt
 
 - name: Install pm2
-  become: "{{ user }}"
+  become_user: "{{ user }}"
   shell: source ~/.profile && npm install pm2 -g
   args:
     executable: /bin/bash
@@ -18,11 +18,11 @@
     state: directory
     mode: 0755
     owner: "{{ user }}"
-    group: "{{ user }}"
+    group: "{{ group }}"
     recurse: yes
 
 - name: Clone wasantha-athukorala-web git repo
-  become: "{{ user }}"
+  become_user: "{{ user }}"
   git:
     repo: 'https://github.com/wimoMisterX/wasantha-athukorala-web.git'
     dest: "{{ instance_location }}/src"
@@ -36,7 +36,7 @@
     path: "{{ instance_location }}/src/node_modules"
 
 - name: Install npm packages
-  become: "{{ user }}"
+  become_user: "{{ user }}"
   shell: source ~/.profile && npm install
   args:
     executable: /bin/bash
@@ -48,12 +48,12 @@
     state: directory
     mode: 0755
     owner: "{{ user }}"
-    group: "{{ user }}"
+    group: "{{ group }}"
   with_items:
     - js
 
-- name: Build JS bundle
-  become: "{{ user }}"
+- name: Build js and css assets
+  become_user: "{{ user }}"
   shell: source ~/.profile && npm run build
   args:
     executable: /bin/bash
@@ -69,19 +69,19 @@
     src: pm2-deploy.yml
     dest: "{{ instance_location }}"
     owner: "{{ user }}"
-    group: "{{ user }}"
+    group: "{{ group }}"
     mode: 0644
 
 - name: Stop previous versions
-  become: "{{ user }}"
+  become_user: "{{ user }}"
   shell: source ~/.profile && pm2 stop all
   args:
     executable: /bin/bash
   register: pm2_stop_result
-  failed_when: "'No process found' not in pm2_stop_result.stderr"
+  failed_when: "pm2_stop_result|failed and 'No process found' not in pm2_stop_result.stderr"
 
 - name: Start app
-  become: "{{ user }}"
+  become_user: "{{ user }}"
   shell: source ~/.profile && pm2 start pm2-deploy.yml
   args:
     chdir: "{{ instance_location }}"
