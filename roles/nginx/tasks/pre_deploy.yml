@@ -1,6 +1,7 @@
 - name: get current sites-enabled
   find:
     paths: "/etc/nginx/sites-enabled"
+    file_type: any
   register: sites_enabled
 
 - name: delete all current sites-enabled

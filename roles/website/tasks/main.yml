@@ -58,6 +58,8 @@
   args:
     executable: /bin/bash
     chdir: "{{ instance_location }}/src"
+  environment:
+    NODE_ENV: "{{ inventory_file|basename }}"
 
 - name: Unlock encrypted files
   shell: git-crypt unlock /keys/wasantha-athukorala-web-git-crypt-key
