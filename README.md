@@ -19,3 +19,9 @@ This repo is an ansible deployment dedicated for https://github.com/wimoMisterX/
   * remote_user
   * private_key
   * website_version
+
+## Testing locally
+* Install `vagrant`
+* Bring up the VM by `vagrant up`
+* Run the `deploy.yml` playbook
+* Visit `localhost:8080`
