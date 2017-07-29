@@ -16,6 +16,15 @@
     state: absent
     path: "/etc/nginx/sites-enabled/default"
 
+- name: Create /var/www/html folder
+  file:
+    path: /var/www/html
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+    recurse: yes
+
 - name: copy maintenance html
   copy:
     src: maintenance.html

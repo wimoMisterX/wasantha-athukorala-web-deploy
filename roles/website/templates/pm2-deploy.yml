@@ -5,7 +5,7 @@ apps:
       instances: {{ instances_in_cluster }}
       exec_mode: cluster
       env:
-          NODE_ENV: {{ inventory_file|basename }}
+          NODE_ENV: {{ current_env }}
           NODE_CONFIG_DIR: {{ instance_location }}/src/config
           PORT: {{ port }}
 {% endfor %}

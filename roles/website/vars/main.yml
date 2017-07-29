@@ -1,2 +1,3 @@
 npm_executable: "{{ nvm.dir }}/versions/node/v{{ nvm.node_version }}/bin/npm"
 instances_in_cluster: 5
+current_env: "{{ 'development' if inventory_file|basename == 'vagrant_ansible_inventory' else 'production' }}"

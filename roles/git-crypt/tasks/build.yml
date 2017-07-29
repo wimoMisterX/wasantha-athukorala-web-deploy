@@ -1,0 +1,34 @@
+- name: Install dependencies
+  apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+  with_items:
+    - git
+    - build-essential
+    - libssl-dev
+
+- name: Check git-crypt exists
+  stat:
+    path: "{{ git_crypt.install_location }}/bin/git-crypt"
+  register: git_crypt_installed
+
+- name: Get git-crypt version
+  shell: git-crypt --version
+  register: git_crypt_version_result
+  when: "git_crypt_installed.stat.exists"
+
+- set_fact:
+    current_git_crypt_version: "{{ git_crypt_version_result.stderr.split(' ')[1] if git_crypt_installed.stat.exists else git_crypt.version }}"
+
+- name: clone git-crypt repo
+  git:
+    repo: 'https://github.com/AGWA/git-crypt.git'
+    dest: "{{ git_crypt.build_location }}"
+    version: "{{ git_crypt.version }}"
+    accept_hostkey: yes
+    force: yes
+  when: "current_git_crypt_version != git_crypt.version or not git_crypt_installed.stat.exists"
+
+- name: build and install git-crypt
+  shell: "make && make install PREFIX={{ git_crypt.install_location }}"
+  args:
+    chdir: "{{ git_crypt.build_location }}"
+  when: "current_git_crypt_version != git_crypt.version or not git_crypt_installed.stat.exists"

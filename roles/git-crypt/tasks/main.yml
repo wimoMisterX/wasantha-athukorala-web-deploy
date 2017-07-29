@@ -1,0 +1,9 @@
+- name: Install git-crypt from apt
+  apt:
+    name: "git-crypt"
+    state: present
+  register: git_crypt_result
+  failed_when: "git_crypt_result|failed and 'No package matching' not in git_crypt_result.msg"
+
+- include: build.yml
+  when: "'No package matching' in git_crypt_result.msg"

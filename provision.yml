@@ -10,5 +10,6 @@
       action: setup
   roles:
     - common
+    - git-crypt
     - nvm
     - nginx
