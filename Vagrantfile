@@ -11,12 +11,13 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider :virtualbox do |vb|
     vb.name = "wasantha-athukorala-web-01"
+    vb.memory = 1024
+    vb.cpus = 1
   end
 
   config.vm.network "forwarded_port", guest: 80, host: 8080, id: "nginx_port"
 
   config.vm.provision "ansible" do |ansible|
-    ansible.verbose = "v"
     ansible.playbook = "provision.yml"
     ansible.groups = {
       "webservers" => ['web-01']
