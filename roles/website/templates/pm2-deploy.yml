@@ -8,4 +8,5 @@ apps:
           NODE_ENV: {{ current_env }}
           NODE_CONFIG_DIR: {{ instance_location }}/src/config
           PORT: {{ port }}
+          WEBSITE_VERSION: {{ website_version }}
 {% endfor %}

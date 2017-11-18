@@ -11,6 +11,14 @@
     - htop
     - screen
 
+- name: Set authorized ssh keys
+  authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: "{{ lookup('file', item)  }}"
+  with_fileglob:
+    - 'files/*.pub'
+
 - name: Create keys folder
   file:
     path: /keys

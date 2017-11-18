@@ -44,6 +44,11 @@
   with_items:
     - js
 
+- name: Unlock encrypted files
+  shell: git-crypt unlock /keys/wasantha-athukorala-web-git-crypt-key
+  args:
+    chdir: "{{ instance_location }}/src"
+
 - name: Build js and css assets
   become_user: "{{ user }}"
   shell: source ~/.profile && npm run build
@@ -52,11 +57,6 @@
     chdir: "{{ instance_location }}/src"
   environment:
     NODE_ENV: "{{ current_env }}"
-
-- name: Unlock encrypted files
-  shell: git-crypt unlock /keys/wasantha-athukorala-web-git-crypt-key
-  args:
-    chdir: "{{ instance_location }}/src"
 
 - name: Copy pm2 deploy file
   template:

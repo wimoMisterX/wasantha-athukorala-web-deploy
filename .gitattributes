@@ -1,2 +1,2 @@
 keys/* filter=git-crypt diff=git-crypt
-playbooks/roles/common/files/wasantha-athukorala-web-git-crypt-key filter=git-crypt diff=git-crypt
+roles/common/files/*.pub filter=git-crypt diff=git-crypt
